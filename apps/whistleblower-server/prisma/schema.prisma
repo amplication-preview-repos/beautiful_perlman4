@@ -1,0 +1,50 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DB_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Report {
+  id          String    @id @default(cuid())
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  title       String?
+  description String?
+  reportedBy  String?
+  reportedAt  DateTime?
+  category    Category? @relation(fields: [categoryId], references: [id])
+  categoryId  String?
+  status      Status?   @relation(fields: [statusId], references: [id])
+  statusId    String?
+}
+
+model Category {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  name      String?
+  reports   Report[]
+}
+
+model Status {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  status    String?
+  reports   Report[]
+}
+
+model User {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  firstName String?
+  lastName  String?
+  username  String   @unique
+  email     String?  @unique
+  password  String
+  roles     Json
+}
